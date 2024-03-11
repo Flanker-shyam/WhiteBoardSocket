@@ -9,7 +9,6 @@ wss.on('connection', (ws: WebSocket) => {
     ws.on('message', (message: string) => {
         try {
             const parsedMessage = JSON.parse(message);
-            console.log('Received: ', parsedMessage);
 
             wss.clients.forEach(client => {
                 if (client !== ws && client.readyState === WebSocket.OPEN) {
