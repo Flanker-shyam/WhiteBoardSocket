@@ -10,7 +10,6 @@ wss.on("connection", (ws: WebSocket) => {
   ws.on("message", (message: string) => {
     try {
       let parsedMessage = JSON.parse(message);
-      console.log("Message received after parse first: ", parsedMessage);
 
       if(parsedMessage.type === "sessionKey"){
         let sessionId = parsedMessage.key;
@@ -21,9 +20,6 @@ wss.on("connection", (ws: WebSocket) => {
         else{
           sessionIdMap[sessionId] = [ws];
         }
-
-        console.log("Client is subscribed to session: ", sessionId);
-        console.log("type of key: ", typeof sessionId);
       }
       else{
         console.log("Broadcasting message to all subscribed clients");
@@ -31,9 +27,7 @@ wss.on("connection", (ws: WebSocket) => {
         const clients = sessionIdMap[parsedMessage.type];
         if(clients){
           clients.forEach((client: WebSocket) => {
-            console.log("sending...... in loop");
             if (client !== ws && client.readyState === WebSocket.OPEN) {
-              console.log("sending message to client112222222222222222: ");
               client.send(parsedMessage.data);
             }
           });
@@ -50,12 +44,10 @@ wss.on("connection", (ws: WebSocket) => {
 
  ws.on("close", () => {
     console.log("Client disconnected");
-    // Remove WebSocket connection from sessionMap when client disconnects
     removeFromMap(ws);
   });
 });
 
-// Removing a specific value from all arrays in the map
 function removeFromMap(value: WebSocket): void {
   for (const key in sessionIdMap) {
     if (sessionIdMap[key]) {

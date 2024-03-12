@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const ws_1 = __importDefault(require("ws"));
 const wss = new ws_1.default.Server({ port: 8083 });
-// const sessionMap = new Map();
 let sessionIdMap = {};
 wss.on("connection", (ws) => {
     console.log("Client connected");
@@ -26,11 +25,7 @@ wss.on("connection", (ws) => {
             }
             else {
                 console.log("Broadcasting message to all subscribed clients");
-                // console.log("datatta: ", JSON.parse(parsedMessage.data));
-                // console.log("rtyoeeeeee: ", JSON.parse(typeof parsedMessage.data));
-                // const clients = sessionMap.get(parsedMessage.type);
                 const clients = sessionIdMap[parsedMessage.type];
-                console.log('clients: ', clients);
                 if (clients) {
                     clients.forEach((client) => {
                         console.log("sending...... in loop");
@@ -44,14 +39,6 @@ wss.on("connection", (ws) => {
                     console.log("NO clients found for session ID: ", parsedMessage.type);
                 }
             }
-            // console.log('Message received after parse: ', message);
-            // console.log("type after parse: ", typeof message);
-            // wss.clients.forEach((client) => {
-            //   if (client !== ws && client.readyState === WebSocket.OPEN) {
-            //     console.log("sending message to client112222222222222222: ");
-            //     client.send(JSON.stringify(parsedMessage));
-            //   }
-            // });
         }
         catch (error) {
             console.error("Error parsing message: ", error);
@@ -71,6 +58,7 @@ function removeFromMap(value) {
         }
     }
 }
+;
 wss.on("error", (error) => {
     console.error("WebSocket server error: ", error);
 });
